@@ -3,3 +3,10 @@ export interface UserData {
     password: string;
     token: string;
 }
+
+export interface ITask {
+    user: number;
+    title: string;
+    description: string;
+    status: string;
+}
