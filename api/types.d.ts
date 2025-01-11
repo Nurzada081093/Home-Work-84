@@ -5,7 +5,6 @@ export interface UserData {
 }
 
 export interface ITask {
-    user: number;
     title: string;
     description: string;
     status: string;
