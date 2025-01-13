@@ -1,32 +1,36 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { ITask, ITaskMutation } from '../../types';
-import axiosRequest from '../../axiosRequest.ts';
+import axiosRequest, { getAuthToken } from '../../axiosRequest.ts';
 
-export const addTask = createAsyncThunk<void, {task: ITaskMutation, token: string}>(
+export const addTask = createAsyncThunk<void, ITaskMutation>(
   'tasks/addTask',
-  async ({task, token}) => {
-    await axiosRequest.post('tasks', {...task}, {headers: {'Authorization': token}});
+  async (task) => {
+    getAuthToken();
+    await axiosRequest.post('tasks', {...task});
   }
 );
 
-export const getTasks = createAsyncThunk<ITask[], string>(
+export const getTasks = createAsyncThunk<ITask[], void>(
   'tasks/getTasks',
-  async (token) => {
-    const response = await axiosRequest('/tasks',  {headers: {'Authorization': token}});
+  async () => {
+    getAuthToken();
+    const response = await axiosRequest('/tasks');
     return response.data || [];
   }
 );
 
-export const deleteTask = createAsyncThunk<void, {taskId: string, token: string}>(
+export const deleteTask = createAsyncThunk<void, string>(
   'tasks/deleteTask',
-  async ({taskId, token}) => {
-     await axiosRequest.delete(`/tasks/${taskId}`,  {headers: {'Authorization': token}});
+  async (taskId) => {
+    getAuthToken();
+     await axiosRequest.delete(`/tasks/${taskId}`);
   }
 );
 
-export const editTask = createAsyncThunk<void, {taskId: string, task: ITaskMutation, token: string}>(
+export const editTask = createAsyncThunk<void, {taskId: string, task: ITaskMutation}>(
   'tasks/editTask',
-  async ({taskId, task, token}) => {
-    await axiosRequest.patch(`tasks/${taskId}`, {...task}, {headers: {'Authorization': token}});
+  async ({taskId, task}) => {
+    getAuthToken();
+    await axiosRequest.patch(`tasks/${taskId}`, {...task});
   }
 );

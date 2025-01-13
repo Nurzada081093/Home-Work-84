@@ -41,7 +41,7 @@ const UserFormRegister: React.FC<Props> = ({addNewUser}) => {
     <Box
       sx={{
         width: '400px',
-        margin: '5.5% auto',
+        margin: '6% auto',
         borderRadius: 4,
         p: "19px",
         backgroundColor: "rgba(123,131,128,0.71)",
@@ -75,10 +75,8 @@ const UserFormRegister: React.FC<Props> = ({addNewUser}) => {
             placeholder="Enter your password"
           />
           <Button type="submit" sx={{height: '40px', fontSize: '18px'}}
-            // disabled={loaderPost}
           >
             Enter
-            {/*{loaderPost ? <CircularProgress size="30px" sx={{marginLeft: '20px'}}/> : null}*/}
           </Button>
         </Stack>
       </form>

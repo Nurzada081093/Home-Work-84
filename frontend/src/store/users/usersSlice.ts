@@ -5,60 +5,66 @@ import { RootState } from '../../app/store.ts';
 
 interface IUserInterface {
   user: IUserMutation | null;
-  token: string;
   loading: boolean;
-  error: boolean;
+  error: string | null;
 }
 
 const initialState: IUserInterface = {
   user: null,
-  token: '',
   loading: false,
-  error: false,
+  error: null,
 }
 
 export const userSlice = (state: RootState) => state.users.user;
-export const tokenSlice = (state: RootState) => state.users.token;
+export const loaderSlice = (state: RootState) => state.users.loading;
+export const errorSlice = (state: RootState) => state.users.error;
 
 const usersSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {},
+  reducers: {
+    clearUser: (state) => {
+      state.user = null;
+      state.error = null;
+      state.loading = false;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getUser.pending, (state) => {
         state.loading = true;
-        state.error = false;
+        state.error = null;
       })
       .addCase(getUser.fulfilled, (state, {payload: user}) => {
         state.user = null;
-        state.token = '';
         state.loading = false;
-        state.error = false;
+        state.error = null;
         state.user = user;
-        state.token = user.token;
       })
-      .addCase(getUser.rejected, (state) => {
+      .addCase(getUser.rejected, (state, {payload: message}) => {
         state.loading = false;
-        state.error = true;
+        if (message) {
+          state.error = String(message);
+        }
       })
       .addCase(addUser.pending, (state) => {
         state.loading = true;
-        state.error = false;
+        state.error = null;
       })
       .addCase(addUser.fulfilled, (state, {payload: user}) => {
         state.user = null;
-        state.token = '';
         state.loading = false;
-        state.error = false;
+        state.error = null;
         state.user = user;
-        state.token = user.token;
       })
-      .addCase(addUser.rejected, (state) => {
+      .addCase(addUser.rejected, (state, {payload: message}) => {
         state.loading = false;
-        state.error = true;
+        if (message) {
+          state.error = String(message);
+        }
       });
   }
 });
 
 export const usersRouter = usersSlice.reducer;
+export const { clearUser } = usersSlice.actions;

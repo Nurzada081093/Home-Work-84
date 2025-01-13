@@ -5,10 +5,12 @@ import { store } from './app/store.ts';
 import { BrowserRouter } from 'react-router-dom';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { CssBaseline } from '@mui/joy';
 
 createRoot(document.getElementById('root')!).render(
   <Provider store={store}>
     <BrowserRouter>
+      <CssBaseline/>
       <ToastContainer />
       <App />
     </BrowserRouter>

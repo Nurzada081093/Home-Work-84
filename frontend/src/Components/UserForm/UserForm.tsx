@@ -4,8 +4,11 @@ import Stack from '@mui/joy/Stack';
 import { Box } from '@mui/joy';
 import React, { useState } from 'react';
 import { IUser } from '../../types';
-import { NavLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import { useAppSelector } from '../../app/hoks.ts';
+import { loaderSlice } from '../../store/users/usersSlice.ts';
+import { CircularProgress } from '@mui/material';
 
 interface Props {
   getUserFromAPI: (user: IUser) => void;
@@ -18,6 +21,8 @@ const initialValues = {
 
 const UserForm:React.FC<Props> = ({getUserFromAPI}) => {
   const [user, setUser] = useState<IUser>(initialValues);
+  const loader = useAppSelector(loaderSlice);
+  const navigate = useNavigate();
 
   const onChangeLogin = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target;
@@ -42,7 +47,7 @@ const UserForm:React.FC<Props> = ({getUserFromAPI}) => {
     <Box
       sx={{
         width: '400px',
-        margin: '5% auto',
+        margin: '6% auto',
         borderRadius: 4,
         p: "19px",
         backgroundColor: "rgba(123,131,128,0.71)",
@@ -76,14 +81,12 @@ const UserForm:React.FC<Props> = ({getUserFromAPI}) => {
             placeholder="Enter your password"
           />
           <Button type="submit" sx={{height: '40px', fontSize: '18px'}}
-            // disabled={loaderPost}
+            disabled={loader}
           >
             Login
-            {/*{loaderPost ? <CircularProgress size="30px" sx={{marginLeft: '20px'}}/> : null}*/}
+            {loader ? <CircularProgress size="30px" sx={{marginLeft: '20px'}}/> : null}
           </Button>
-          <Button to={'/register'} component={NavLink} variant="outlined" sx={{color: 'rgb(246,242,242)',  '&:hover': {
-              color: 'rgb(44,42,42)',
-            }}}>Register new user</Button>
+          <Button variant="outlined" type="button" sx={{height: '40px', fontSize: '18px', color: 'white', '&:hover': {color: 'rgb(123,131,128)'}}} onClick={() => navigate('/')}>Exit</Button>
         </Stack>
       </form>
     </Box>

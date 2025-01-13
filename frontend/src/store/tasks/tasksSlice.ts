@@ -26,6 +26,9 @@ const initialState: InitialTask = {
 };
 
 export const allTasksSlice = (state: RootState) => state.tasks.tasks;
+export const addSlice = (state: RootState) => state.tasks.loaders.addLoader;
+export const getSlice = (state: RootState) => state.tasks.loaders.getLoader;
+export const editSlice = (state: RootState) => state.tasks.loaders.editLoader;
 
 const tasksSlice = createSlice({
   name: 'tasks',

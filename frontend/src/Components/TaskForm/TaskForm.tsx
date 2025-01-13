@@ -1,5 +1,5 @@
 import {
-  Button,
+  Button, CircularProgress,
   Container,
   InputLabel,
   MenuItem,
@@ -14,6 +14,8 @@ import React, { useState } from 'react';
 import { FormControl, Textarea } from '@mui/joy';
 import { ITaskMutation } from '../../types';
 import { toast } from 'react-toastify';
+import { useAppSelector } from '../../app/hoks.ts';
+import { addSlice, editSlice } from '../../store/tasks/tasksSlice.ts';
 
 interface Props {
   addNewTask: (task: ITaskMutation) => void;
@@ -28,6 +30,8 @@ const initialTask = {
 
 const TaskForm: React.FC<Props> = ({addNewTask, isEdit}) => {
   const [newTask, setNewTask] = useState<ITaskMutation>(initialTask);
+  const addLoading = useAppSelector(addSlice);
+  const editLoading = useAppSelector(editSlice);
 
   const onChange = (e: SelectChangeEvent<string> | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const {name, value} = e.target;
@@ -53,16 +57,19 @@ const TaskForm: React.FC<Props> = ({addNewTask, isEdit}) => {
   return (
     <Container>
       <form onSubmit={onSubmitTask} style={{
-        margin: '20px 10px',
-        padding: '20px 10px',
+        margin: '40px auto',
+        padding: '40px 10px',
+        backgroundColor: 'rgba(235,241,241,0.93)',
+        width: '50%',
+        borderRadius: '10px'
       }}>
-        <Grid container spacing={2} sx={{margin: '0 30%', width: '80%'}}>
+        <Grid container spacing={1} sx={{margin: '0 20%', width: '80%'}}>
           <Typography variant="h4" sx={{flexGrow: 0.4, textAlign: 'center', marginBottom: '20px'}}>
             {isEdit ? 'Edit' : 'Add'} task
           </Typography>
-          <Grid size={12}>
+          <Grid size={10}>
             <TextField
-              sx={{width: '50%'}}
+              sx={{width: '100%'}}
               id="outlined-basic"
               label="Title"
               name="title"
@@ -74,7 +81,7 @@ const TaskForm: React.FC<Props> = ({addNewTask, isEdit}) => {
           </Grid>
           <Grid size={12}>
             <Textarea
-              sx={{width: '50%'}}
+              sx={{width: '83%', backgroundColor: 'transparent', border: '1px solid darkgrey'}}
               id="outlined-basic"
               variant="outlined"
               placeholder="Description..."
@@ -85,7 +92,7 @@ const TaskForm: React.FC<Props> = ({addNewTask, isEdit}) => {
             />
           </Grid>
           <Grid size={12}>
-            <FormControl sx={{width: '50%'}}>
+            <FormControl sx={{width: '83%'}}>
               <InputLabel id="status">Status</InputLabel>
               <Select
                 labelId="Status"
@@ -105,11 +112,11 @@ const TaskForm: React.FC<Props> = ({addNewTask, isEdit}) => {
           </Grid>
           <Grid size={12}>
             <Button
-              // disabled={addLoading}
-              sx={{width: '50%'}} variant="contained"
+              disabled={addLoading || editLoading}
+              sx={{width: '83%'}} variant="contained"
               type="submit">
               {isEdit ? 'Edit' : 'Add'}
-              {/*{addLoading ? <CircularProgress size="30px" sx={{marginLeft: '20px'}}/> : null}*/}
+              {addLoading || editLoading ? <CircularProgress size="30px" sx={{marginLeft: '20px'}}/> : null}
             </Button>
           </Grid>
         </Grid>

@@ -4,32 +4,36 @@ import { useAppDispatch, useAppSelector } from '../../app/hoks.ts';
 import { userSlice } from '../../store/users/usersSlice.ts';
 import { addUser } from '../../store/users/usersThunk.ts';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { useEffect } from 'react';
 
 const RegisterContainer = () => {
-  const userAPI = useAppSelector(userSlice);
+  const userAPI = useAppSelector(userSlice); // Получаем информацию о пользователе
   const dispatch = useAppDispatch();
-  const  navigate = useNavigate();
+  const navigate = useNavigate();
 
-  const addNewUser = (user: IUser) => {
-    dispatch(addUser(user));
+  const addNewUser = async (user: IUser) => {
+    await dispatch(addUser(user));
+    toast.success("You are successfully registered!");
+
     navigate('/tasks');
   };
 
+  useEffect(() => {
+    if (userAPI) {
+      navigate('/tasks');
+    }
+  }, [userAPI, navigate]);
+
   const tokens: string[] = JSON.parse(localStorage.getItem('tokens') || '[]');
 
-  if (userAPI) {
-
-    const token = tokens.find(token => token === userAPI.token);
-
-    if (!token) {
+  if (userAPI && userAPI.token) {
+    const tokenExists = tokens.includes(userAPI.token);
+    if (!tokenExists) {
       tokens.push(userAPI.token);
+      localStorage.setItem('tokens', JSON.stringify(tokens));
     }
-
-    localStorage.setItem('tokens', JSON.stringify(tokens));
   }
-
-  console.log(userAPI);
-  console.log(tokens);
 
   return (
     <div className='register'>
@@ -39,3 +43,4 @@ const RegisterContainer = () => {
 };
 
 export default RegisterContainer;
+

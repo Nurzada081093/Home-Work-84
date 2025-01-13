@@ -5,30 +5,35 @@ import Button from '@mui/material/Button';
 import CardActionArea from '@mui/material/CardActionArea';
 import CardActions from '@mui/material/CardActions';
 import { ITask } from '../../../types';
-import React from 'react';
-import { useAppDispatch, useAppSelector } from '../../../app/hoks.ts';
-import { tokenSlice } from '../../../store/users/usersSlice.ts';
+import React, { useState } from 'react';
+import { useAppDispatch } from '../../../app/hoks.ts';
 import { deleteTask, getTasks } from '../../../store/tasks/tasksThunk.ts';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import DeleteButtonSpinner from '../../UI/DeleteButtonSpinner/DeleteButtonSpinner.tsx';
 
 interface Props {
   task: ITask;
 }
 
 const Task: React.FC<Props> = ({task}) => {
-  const token = useAppSelector(tokenSlice);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [deleteLoading, setDeleteLoading] = useState<{index: string | null; loading: boolean}>({
+    index: null,
+    loading: false,
+  });
 
-  const deleteUserTask = (taskId: string) => {
-    dispatch(deleteTask({taskId, token}));
+  const deleteUserTask = async (taskId: string) => {
+    setDeleteLoading(prevState => ({...prevState, loading: true, index: taskId}));
+    await dispatch(deleteTask(taskId));
+    await dispatch(getTasks());
     toast.success("The task was deleted successfully");
-    dispatch(getTasks(token));
+    setDeleteLoading(prevState => ({...prevState, loading: false, index: null}));
   };
 
   return (
-    <Card sx={{ width: '300px', margin: '20px 0', display: 'flex', flexDirection: 'column', wordWrap: 'break-word', whiteSpace: 'normal'}}>
+    <Card sx={{ width: '300px', margin: '20px 10px', display: 'flex', flexDirection: 'column', wordWrap: 'break-word', whiteSpace: 'normal'}}>
       <Typography variant="body2" sx={{ color: 'text.secondary', textAlign: 'end', width: '270px', margin: '10px auto' }}>
         Status: {task.status}
       </Typography>
@@ -43,8 +48,11 @@ const Task: React.FC<Props> = ({task}) => {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <Button size="small" color="primary" onClick={() => deleteUserTask(task._id)}>
+        <Button
+          disabled={deleteLoading.loading && task._id === deleteLoading.index}
+          size="small" color="primary" onClick={() => deleteUserTask(task._id)}>
           Delete
+          {deleteLoading.loading && task._id === deleteLoading.index ? <DeleteButtonSpinner/> : null}
         </Button>
         <Button size="small" color="primary" onClick={() => navigate(`/tasks/${task._id}/editTask`)}>
           Edit
