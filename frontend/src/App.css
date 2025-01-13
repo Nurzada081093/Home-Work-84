@@ -1,4 +1,13 @@
-body {
+.login {
   background: linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3)), url(assets/bg.jpg) no-repeat center center fixed;
   background-size: cover;
+  margin: -7px -8px;
+  padding: 4% 0 4.77%;
+}
+
+.register{
+  background: linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3)), url(assets/bg-2.jpg) no-repeat center center fixed;
+  background-size: cover;
+  margin: -8px -8px -10px;
+  padding: 1% 0 3%;
 }

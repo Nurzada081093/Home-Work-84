@@ -4,8 +4,10 @@ import Stack from '@mui/joy/Stack';
 import { Box } from '@mui/joy';
 import React, { useState } from 'react';
 import { IUser } from '../../types';
+import { NavLink } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
-interface IProps {
+interface Props {
   getUserFromAPI: (user: IUser) => void;
 }
 
@@ -14,7 +16,7 @@ const initialValues = {
   password: ''
 };
 
-const UserForm:React.FC<IProps> = ({getUserFromAPI}) => {
+const UserForm:React.FC<Props> = ({getUserFromAPI}) => {
   const [user, setUser] = useState<IUser>(initialValues);
 
   const onChangeLogin = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,17 +30,19 @@ const UserForm:React.FC<IProps> = ({getUserFromAPI}) => {
 
   const onSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    getUserFromAPI({...user});
 
-    // console.log(user);
+    if (user.username.trim().length === 0 || user.password.trim().length === 0) {
+      toast.error("Enter your login and password!");
+    } else {
+      getUserFromAPI({...user});
+    }
   };
-
 
   return (
     <Box
       sx={{
         width: '400px',
-        margin: '10% auto',
+        margin: '5% auto',
         borderRadius: 4,
         p: "19px",
         backgroundColor: "rgba(123,131,128,0.71)",
@@ -74,9 +78,12 @@ const UserForm:React.FC<IProps> = ({getUserFromAPI}) => {
           <Button type="submit" sx={{height: '40px', fontSize: '18px'}}
             // disabled={loaderPost}
           >
-            Enter
+            Login
             {/*{loaderPost ? <CircularProgress size="30px" sx={{marginLeft: '20px'}}/> : null}*/}
           </Button>
+          <Button to={'/register'} component={NavLink} variant="outlined" sx={{color: 'rgb(246,242,242)',  '&:hover': {
+              color: 'rgb(44,42,42)',
+            }}}>Register new user</Button>
         </Stack>
       </form>
     </Box>

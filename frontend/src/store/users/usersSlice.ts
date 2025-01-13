@@ -5,17 +5,20 @@ import { RootState } from '../../app/store.ts';
 
 interface IUserInterface {
   user: IUserMutation | null;
+  token: string;
   loading: boolean;
   error: boolean;
 }
 
 const initialState: IUserInterface = {
   user: null,
+  token: '',
   loading: false,
   error: false,
 }
 
 export const userSlice = (state: RootState) => state.users.user;
+export const tokenSlice = (state: RootState) => state.users.token;
 
 const usersSlice = createSlice({
   name: 'users',
@@ -29,9 +32,11 @@ const usersSlice = createSlice({
       })
       .addCase(getUser.fulfilled, (state, {payload: user}) => {
         state.user = null;
+        state.token = '';
         state.loading = false;
         state.error = false;
         state.user = user;
+        state.token = user.token;
       })
       .addCase(getUser.rejected, (state) => {
         state.loading = false;
@@ -43,9 +48,11 @@ const usersSlice = createSlice({
       })
       .addCase(addUser.fulfilled, (state, {payload: user}) => {
         state.user = null;
+        state.token = '';
         state.loading = false;
         state.error = false;
         state.user = user;
+        state.token = user.token;
       })
       .addCase(addUser.rejected, (state) => {
         state.loading = false;
